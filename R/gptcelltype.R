@@ -9,6 +9,7 @@
 #' @param openai_key The OpenAI key obtained from https://platform.openai.com/account/api-keys The default is NA, which will resulting outputing the prompt itself. If an actual key is provided, then the output will be the celltype annotations from the GPT model specified by the user. 
 #' @param model A valid GPT-4 or GPT-3.5 model name list on https://platform.openai.com/docs/models. Default is 'gpt-4-32k'.
 #' @param topgenenumber Number of top differential genes to be used if input is Seurat differential genes.
+#' @param base_url required
 #' @import openai
 #' @export
 #' @return A vector of cell types when the user provide openai_key or the prompt itself when openai_key = NA (default)
@@ -28,7 +29,7 @@
 #' prompt <- gptcelltype(all.markers, tissuename='human PBMC')
 #' return(prompt)
 
-gptcelltype <- function(input, tissuename=NULL, model='gpt-4', topgenenumber = 10) {
+gptcelltype <- function(input, tissuename=NULL, model='gpt-4', topgenenumber = 10,base_url=NULL) {
   OPENAI_API_KEY <- Sys.getenv("OPENAI_API_KEY")
   if (OPENAI_API_KEY == "") {
     print("Note: OpenAI API key not found: returning the prompt itself.")
@@ -62,7 +63,7 @@ gptcelltype <- function(input, tissuename=NULL, model='gpt-4', topgenenumber = 1
       flag <- 0
       while (flag == 0) {
         k <- openai::create_chat_completion(
-          model = model,
+          model = model,base_url=base_url,
           message = list(list("role" = "user", "content" = paste0('Identify cell types of ',tissuename,' cells using the following markers separately for each\n row. Only provide the cell type name. Do not show numbers before the name.\n Some can be a mixture of multiple cell types.\n',paste(input[id],collapse = '\n'))))
         )
         res <- strsplit(k$choices[,'message.content'],'\n')[[1]]
