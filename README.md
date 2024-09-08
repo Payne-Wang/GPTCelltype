@@ -1,5 +1,23 @@
 注意：使用的模型最好是智力比较高的，最起码是claude-3-5-sonnet-20240620、gpt-4o及以上的水平，不然无法准确执行提示词而导致无法模式化输出，进一步导致正则判断错误而陷入死循环。
-
+以下是容易陷入死循环的部分：
+```{r eval = FALSE}
+allres <- sapply(1:cutnum,function(i) {
+      id <- which(cid==i)
+      flag <- 0
+      while (flag == 0) {
+        k <- openai::create_chat_completion(
+          model = model,base_url=base_url,
+          message = list(list("role" = "user", "content" = paste0('Identify cell types of ',tissuename,' cells using the following markers separately for each\n row. Only provide the cell type name. Do not show numbers before the name.\n Some can be a mixture of multiple cell types.\n',paste(input[id],collapse = '\n'))))
+        )
+        res <- strsplit(k$choices[,'message.content'],'(\n){1,}')[[1]]  #注意这个位置，原代码中只有一个回车符匹配，我这里做了多回车符匹配。原因是一些执行能力较弱的模型，输出中有可能出现多个回车符。
+        print(res)
+        if (length(res)==length(id))
+          flag <- 1
+      }
+      names(res) <- names(input)[id]
+      res
+    },simplify = F)
+```
 
 
 GPTCelltype: Automatic cell type annotation with GPT-4
