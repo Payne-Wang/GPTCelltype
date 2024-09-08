@@ -30,9 +30,8 @@
 #' return(prompt)
 
 gptcelltype <- function(input, tissuename=NULL, model='gpt-4', topgenenumber = 10,base_url=NULL,api_key=NULL) {
-  if(Sys.getenv("OPENAI_API_KEY")!=""){
-    OPENAI_API_KEY <- Sys.getenv("OPENAI_API_KEY")
-  }else{OPENAI_API_KEY <- api_key}
+  Sys.setenv(OPENAI_API_KEY=api_key)
+  OPENAI_API_KEY <- Sys.getenv("OPENAI_API_KEY")
   if (OPENAI_API_KEY == "") {
     print("Note: OpenAI API key not found: returning the prompt itself.")
     API.flag <- 0
