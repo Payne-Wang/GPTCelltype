@@ -1,3 +1,7 @@
+注意：使用的模型最好是智力比较高的，最起码是claude-3-5-sonnet-20240620、gpt-4o及以上的水平，不然无法准确执行提示词而导致无法模式化输出，进一步导致正则判断错误而陷入死循环。
+
+
+
 GPTCelltype: Automatic cell type annotation with GPT-4
 ====
 
