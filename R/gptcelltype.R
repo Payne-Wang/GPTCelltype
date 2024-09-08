@@ -29,8 +29,10 @@
 #' prompt <- gptcelltype(all.markers, tissuename='human PBMC')
 #' return(prompt)
 
-gptcelltype <- function(input, tissuename=NULL, model='gpt-4', topgenenumber = 10,base_url=NULL) {
-  OPENAI_API_KEY <- Sys.getenv("OPENAI_API_KEY")
+gptcelltype <- function(input, tissuename=NULL, model='gpt-4', topgenenumber = 10,base_url=NULL,api_key=NULL) {
+  if(!is.null(Sys.getenv("OPENAI_API_KEY"))){
+    OPENAI_API_KEY <- Sys.getenv("OPENAI_API_KEY")
+  }else{OPENAI_API_KEY <- api_key}
   if (OPENAI_API_KEY == "") {
     print("Note: OpenAI API key not found: returning the prompt itself.")
     API.flag <- 0
